@@ -4,7 +4,8 @@ class ItemsController < ApplicationController
  # 理由：非会員が出品できてしまうため
 
   def index
-
+    # モデルから一覧データを取り出すように記述
+    @items = Item.all.order(created_at: :desc)
   end
 
   def new
