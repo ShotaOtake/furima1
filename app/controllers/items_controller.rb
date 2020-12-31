@@ -2,6 +2,7 @@ class ItemsController < ApplicationController
   before_action :authenticate_user!, only: [:new, :create, :edit, :update, :destroy]
  # deviseのヘルパーメソッド。ログインしていなければ、ログイン画面へ遷移させる。
  # 理由：非会員が出品できてしまうため
+ before_action :select_item, only: [:show, :edit, :update, :destroy]
 
   def index
     # モデルから一覧データを取り出すように記述
@@ -25,16 +26,13 @@ class ItemsController < ApplicationController
   end
 
   def show
-    @item = Item.find(params[:id])
   end
 
   def edit
-    @item = Item.find(params[:id])
     return redirect_to root_path if current_user.id != @item.user.id
   end
 
   def update
-    @item = Item.find(params[:id])
     @item.update(item_params) if current_user.id == @item.user.id
     return redirect_to item_path if @item.valid?
 
@@ -42,7 +40,6 @@ class ItemsController < ApplicationController
   end
 
   def destroy
-    @item = Item.find(params[:id])
     @item.destroy if current_user.id == @item.user.id
     redirect_to root_path
   end
@@ -65,5 +62,9 @@ class ItemsController < ApplicationController
   # ストロングパラメーターの設定も受講生によって名前が異なります。
   # ActiveHashの設定を確認しましょう。
   end
+
+   def select_item
+    @item = Item.find(params[:id])
+   end
 
 end
